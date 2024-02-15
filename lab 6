@@ -1,0 +1,299 @@
+// ques1 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+
+struct LinkedList {
+    struct Node* head;
+};
+
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+
+void append(struct LinkedList* list, int data) {
+    struct Node* newNode = createNode(data);
+    if (list->head == NULL) {
+        list->head = newNode;
+        return;
+    }
+    struct Node* lastNode = list->head;
+    while (lastNode->next != NULL) {
+        lastNode = lastNode->next;
+    }
+    lastNode->next = newNode;
+}
+
+void display(struct LinkedList* list) {
+    struct Node* current = list->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+
+void sortList(struct LinkedList* list) {
+
+
+
+    int swapped, temp;
+    struct Node* current;
+    struct Node* last = NULL;
+
+    do {
+        swapped = 0;
+        current = list->head;
+
+        while (current->next != last) {
+            if (current->data > current->next->data) {
+                // Swap data
+                temp = current->data;
+                current->data = current->next->data;
+                current->next->data = temp;
+                swapped = 1;
+            }
+            current = current->next;
+        }
+        last = current;
+    } while (swapped);
+}
+
+
+void reverseList(struct LinkedList* list) {
+    struct Node *prev = NULL, *current = list->head, *nextNode;
+    while (current != NULL) {
+        nextNode = current->next;
+        current->next = prev;
+        prev = current;
+        current = nextNode;
+    }
+    list->head = prev;
+}
+
+
+void concatenateLists(struct LinkedList* list1, struct LinkedList* list2) {
+    if (list1->head == NULL) {
+        list1->head = list2->head;
+    } else {
+        struct Node* current = list1->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = list2->head;
+    }
+    list2->head = NULL; // Set head of list2 to NULL after concatenation
+}
+
+    int main() {
+    struct LinkedList linkedList;
+    linkedList.head = NULL;
+
+    append(&linkedList, 3);
+    append(&linkedList, 1);
+    append(&linkedList, 5);
+    append(&linkedList, 2);
+
+    printf("Original Linked List: ");
+    display(&linkedList);
+
+    sortList(&linkedList);
+    printf("\nSorted Linked List: ");
+    display(&linkedList);
+
+
+    reverseList(&linkedList);
+    printf("\nReversed Linked List: ");
+    display(&linkedList);
+
+    struct LinkedList linkedList2;
+    linkedList2.head = NULL;
+
+    append(&linkedList2, 8);
+    append(&linkedList2, 6);
+    append(&linkedList2, 7);
+
+    printf("\nSecond Linked List: ");
+    display(&linkedList2);
+
+    concatenateLists(&linkedList, &linkedList2);
+    printf("\nConcatenated Linked List: ");
+    display(&linkedList);
+
+    return 0;
+}
+
+
+
+
+
+// ques 2
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+
+struct Stack {
+    struct Node* top;
+};
+
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+
+void push(struct Stack* stack, int data) {
+    struct Node* newNode = createNode(data);
+    newNode->next = stack->top;
+    stack->top = newNode;
+}
+
+int pop(struct Stack* stack) {
+    if (stack->top == NULL) {
+        printf("Stack underflow\n");
+        return -1;
+    }
+    struct Node* temp = stack->top;
+    int poppedData = temp->data;
+    stack->top = temp->next;
+    free(temp);
+    return poppedData;
+}
+
+
+void displayStack(struct Stack* stack) {
+    struct Node* current = stack->top;
+    printf("Stack: ");
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Stack stack;
+    stack.top = NULL;
+
+    push(&stack, 3);
+    push(&stack, 1);
+    push(&stack, 5);
+
+    displayStack(&stack);
+
+    int poppedData = pop(&stack);
+    if (poppedData != -1) {
+        printf("Popped element: %d\n", poppedData);
+    }
+
+    displayStack(&stack);
+
+    return 0;
+}
+
+
+
+// ques 3
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Queue {
+    struct Node* front;
+    struct Node* rear;
+};
+
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+
+void enqueue(struct Queue* queue, int data) {
+    struct Node* newNode = createNode(data);
+    if (queue->rear == NULL) {
+        queue->front = queue->rear = newNode;
+        return;
+    }
+    queue->rear->next = newNode;
+    queue->rear = newNode;
+}
+
+
+int dequeue(struct Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue underflow\n");
+        return -1; // Or any other error indicator
+    }
+    struct Node* temp = queue->front;
+    int dequeuedData = temp->data;
+    queue->front = temp->next;
+    if (queue->front == NULL) {
+        queue->rear = NULL; // Queue becomes empty after dequeue
+    }
+    free(temp);
+    return dequeuedData;
+}
+
+
+void displayQueue(struct Queue* queue) {
+    struct Node* current = queue->front;
+    printf("Queue: ");
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Queue queue;
+    queue.front = queue.rear = NULL;
+
+    enqueue(&queue, 3);
+    enqueue(&queue, 1);
+    enqueue(&queue, 5);
+
+    displayQueue(&queue);
+
+    int dequeuedData = dequeue(&queue);
+    if (dequeuedData != -1) {
+        printf("Dequeued element: %d\n", dequeuedData);
+    }
+
+    displayQueue(&queue);
+
+    return 0;
+}
