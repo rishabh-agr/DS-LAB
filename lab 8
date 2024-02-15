@@ -1,0 +1,116 @@
+// Binary Search Tree
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+struct Node* insert(struct Node* root, int data) {
+    if (root == NULL) {
+        root = createNode(data);
+    } else if (data <= root->data) {
+        root->left = insert(root->left, data);
+    } else {
+        root->right = insert(root->right, data);
+    }
+    return root;
+}
+
+void inOrder(struct Node* root) {
+    if (root != NULL) {
+        inOrder(root->left);
+        printf("%d ", root->data);
+        inOrder(root->right);
+    }
+}
+
+
+void preOrder(struct Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+
+void postOrder(struct Node* root) {
+    if (root != NULL) {
+        postOrder(root->left);
+        postOrder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+void display(struct Node* root) {
+    printf("In-order traversal: ");
+    inOrder(root);
+    printf("\nPre-order traversal: ");
+    preOrder(root);
+    printf("\nPost-order traversal: ");
+    postOrder(root);
+    printf("\n");
+}
+
+int main() {
+    struct Node* root = NULL;
+
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 15);
+    root = insert(root, 7);
+    root = insert(root, 3);
+    root = insert(root, 12);
+
+    display(root);
+
+    return 0;
+}
+
+
+
+
+
+
+// leet code -- rotate list
+ int GetLength(struct ListNode* head)
+{
+	if (head == NULL)
+		return 0;
+
+	return 1 + GetLength(head->next);
+}
+struct ListNode* rotateRight(struct ListNode* head, int k){
+        if (head == NULL || k == 0)
+		return head;
+    int length = GetLength(head);
+
+	if (length == 1)
+		return head;
+    for(int i=0;i<k%length;i++)
+    {
+        struct ListNode *p=head;
+        while(p->next->next!=NULL)
+        {
+            p=p->next;
+        }
+        struct ListNode *a=(struct ListNode *)malloc(sizeof(struct ListNode));
+        a->val=p->next->val;
+        a->next=head;
+        head=a;
+        p->next=NULL;
+    }
+    return head;
+
+}
