@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_EMPLOYEES 100
+#define MAX_HASH_TABLE_SIZE 10
+
+struct Employee {
+    int key;
+    // Add other employee data as needed
+};
+
+struct HashTable {
+    struct Employee* table[MAX_HASH_TABLE_SIZE];
+};
+
+int hashFunction(int key, int tableSize) {
+    return key % tableSize;
+}
+
+int linearProbe(int index, int tableSize) {
+    // Linear probing: move to the next index if collision occurs
+    return (index + 1) % tableSize;
+}
+
+void insertEmployee(struct HashTable* ht, struct Employee* employee) {
+    int key = employee->key;
+    int index = hashFunction(key, MAX_HASH_TABLE_SIZE);
+
+    // Handle collisions using linear probing
+    while (ht->table[index] != NULL) {
+        index = linearProbe(index, MAX_HASH_TABLE_SIZE);
+    }
+
+    ht->table[index] = employee;
+}
+
+void displayHashTable(struct HashTable* ht) {
+    printf("\nHash Table:\n");
+    for (int i = 0; i < MAX_HASH_TABLE_SIZE; i++) {
+        if (ht->table[i] != NULL) {
+            printf("Index %d: Key %d\n", i, ht->table[i]->key);
+        } else {
+            printf("Index %d: Empty\n", i);
+        }
+    }
+}
+
+int main() {
+    struct HashTable hashTable;
+    for (int i = 0; i < MAX_HASH_TABLE_SIZE; i++) {
+        hashTable.table[i] = NULL;
+    }
+
+    // Example: Insert employees into the hash table
+    struct Employee employees[MAX_EMPLOYEES];
+    for (int i = 0; i < MAX_EMPLOYEES; i++) {
+        employees[i].key = i + 1000; // Assuming keys are 4-digit integers
+        insertEmployee(&hashTable, &employees[i]);
+    }
+
+    // Display the hash table
+    displayHashTable(&hashTable);
+
+    return 0;
+}
